@@ -1,6 +1,6 @@
-import {writeFile} from 'fs'
+const fs = require('fs');
 const puppeteer = require('puppeteer');
-const {findRoomsAvito, findSquareAvito, findFloorFlatAvito, findFloorHouseAvito} = require('./utils/finders')
+const finders = require('./utils/finders')
 let link = 'https://www.avito.ru/nizhniy_novgorod/kvartiry/prodam/vtorichka-ASgBAQICAUSSA8YQAUDmBxSMUg?cd=1&f=ASgBAQICAUSSA8YQAkDmBxSMUsoIJIJZgFk';
 
 (async () => {
@@ -27,10 +27,10 @@ let link = 'https://www.avito.ru/nizhniy_novgorod/kvartiry/prodam/vtorichka-ASgB
                     const price = card.querySelector('.iva-item-body-KLUuy').querySelector('.iva-item-priceStep-uq2CQ').querySelector('.price-root-RA1pj').querySelector('.price-price-JP7qe').innerText;
                     const address = card.querySelector('.iva-item-body-KLUuy').querySelector('.geo-root-zPwRk').querySelector('.geo-address-fhHd0').innerText;
                     const roomsSquareFloorsSplittedContainer = card.querySelector('.iva-item-body-KLUuy').querySelector('.title-root-zZCwT').innerText.replace(/ /g, ' ').split(' ');
-                    const rooms = findRoomsAvito(roomsSquareFloorsSplittedContainer);
-                    const square = findSquareAvito(roomsSquareFloorsSplittedContainer);
-                    const floorFlat = findFloorFlatAvito(roomsSquareFloorsSplittedContainer);
-                    const floorHouse = findFloorHouseAvito(roomsSquareFloorsSplittedContainer);
+                    const rooms = finders.findRoomsAvito(roomsSquareFloorsSplittedContainer);
+                    const square = finders.findSquareAvito(roomsSquareFloorsSplittedContainer);
+                    const floorFlat = finders.findFloorFlatAvito(roomsSquareFloorsSplittedContainer);
+                    const floorHouse = finders.findFloorHouseAvito(roomsSquareFloorsSplittedContainer);
 
                     res.push({
                         price,
@@ -44,7 +44,7 @@ let link = 'https://www.avito.ru/nizhniy_novgorod/kvartiry/prodam/vtorichka-ASgB
 
                 return res;
             });
-            writeFile('avito.json', JSON.stringify(data), err => {
+            fs.writeFile('avito.json', JSON.stringify(data), err => {
                 if (err) {
                     throw err;
                 }

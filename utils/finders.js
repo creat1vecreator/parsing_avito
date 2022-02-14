@@ -1,6 +1,4 @@
-
-
-export const findRoomsAvito = (arr) => {
+const findRoomsAvito = (arr) => {
     let rooms = '';
     for (let i = 0; i < arr[0].length; i++) {
         if (Number(arr[0][i])) {
@@ -9,12 +7,14 @@ export const findRoomsAvito = (arr) => {
     }
 }
 
-export const findSquareAvito = (arr) => {
+const findSquareAvito = (arr) => {
     return arr[2];
 }
-export const findFloorFlatAvito = (arr) => {
+const findFloorFlatAvito = (arr) => {
     return arr[4].split('/')[0];
 }
-export const findFloorHouseAvito = (arr) => {
+const findFloorHouseAvito = (arr) => {
     return arr[4].split('/')[1];
 }
+
+module.exports = {findRoomsAvito, findSquareAvito, findFloorFlatAvito, findFloorHouseAvito};
