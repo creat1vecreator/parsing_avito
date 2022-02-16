@@ -72,7 +72,7 @@ const startScrapping = async () => {
                 return res;
             });
             console.log('starting loop:');
-            for (let i = 0; i < dataCardsAvito[i]; i++) {
+            for (let i = 0; i < dataCardsAvito[i].length; i++) {
                 console.log('going to page...')
                 await page.goto(dataCardsAvito[i].link, {waitUntil: 'domcontentloaded'});
                 await page.waitForSelector('.js-abuse-button button button-origin').catch(e => {
