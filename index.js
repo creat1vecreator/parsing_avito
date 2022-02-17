@@ -6,8 +6,11 @@ let link = 'https://www.avito.ru/nizhniy_novgorod/kvartiry/prodam/vtorichka-ASgB
 const startScrapping = async () => {
     await puppeteer.launch({
         defaultViewport: {
-            width: 1400, height: 900
-        }, headless: false, devtools: true
+            width: 1400,
+            height: 900
+        },
+        headless: false,
+        devtools: true
     }).then(async browser => {
         let page = (await browser.pages())[0];
         await page.goto(link, {waitUntil: 'domcontentloaded'});
@@ -60,7 +63,14 @@ const startScrapping = async () => {
 
 
                     res.push({
-                        id, link, price, address, rooms, square, floorFlat, floorHouse,
+                        id,
+                        link,
+                        price,
+                        address,
+                        rooms,
+                        square,
+                        floorFlat,
+                        floorHouse,
 
 
                     });
@@ -71,7 +81,7 @@ const startScrapping = async () => {
             });
             console.log('starting loop:');
             console.log(dataCardsAvito.length)
-            for (let i = 0; i < dataCardsAvito.length; i++) {
+            for (let i = 0; i < dataCardsAvito.length/10; i++) {
                 console.log('going to page:', dataCardsAvito[i].link);
                 console.log('the quantity of advertisement:', dataCardsAvito.length);
                 console.log('number of iteration:', i)
@@ -79,7 +89,7 @@ const startScrapping = async () => {
                 await page.waitForSelector('.item-params-list').catch(e => {
                     console.log(e.message);
                 });
-                let description = await page.evaluate(async (resolve) => {
+                let description = await page.evaluate(async () => {
                     let descriptionCont = [];
                     try {
                         description = document.querySelector('.item-description-text').innerText;
@@ -90,11 +100,9 @@ const startScrapping = async () => {
                     } catch (e) {
                         console.log(e);
                     }
-                    return descriptionCont;
-                })
-                    .catch(e => console.log(e))
-                    .then(detPageCont => dataCardsAvito[i].detailPage = detPageCont);
+                return descriptionCont}).catch(e => console.log(e));
                 console.log('description to add:,', description);
+                dataCardsAvito[i].detailPage = description
 
 
                 console.log("new description in:", i, 'ad: ', dataCardsAvito[i].description);
