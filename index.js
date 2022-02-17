@@ -15,8 +15,16 @@ const startScrapping = async () => {
         let page = (await browser.pages())[0];
         await page.goto(link, {waitUntil: 'domcontentloaded'});
         try {
-            await page.waitForSelector('.footer-nav-XJtpf');
-
+            try {
+                await page.waitForSelector('.footer-nav-XJtpf');
+                console.log();
+                console.log('successfully waited the selector');
+            } catch (e) {
+                if (e instanceof puppeteer.errors.TimeoutError) {
+                    console.log(e);
+                    await browser.close()
+                }
+            }
             let dataCardsAvito = await page.evaluate(async () => {
                 let res = [];
                 let container = await document.querySelectorAll('div.iva-item-content-rejJg');
@@ -72,20 +80,37 @@ const startScrapping = async () => {
                 return res;
             });
             console.log('starting loop:');
-            for (let i = 0; i < dataCardsAvito[i].length; i++) {
-                console.log('going to page...')
+            console.log(dataCardsAvito.length)
+            for (let i = 0; i < dataCardsAvito.length; i++) {
+                console.log('going to page:', dataCardsAvito[i].link);
+                console.log('the quantity of advertisement:', dataCardsAvito.length);
+                console.log('number of iteration:', i)
                 await page.goto(dataCardsAvito[i].link, {waitUntil: 'domcontentloaded'});
-                await page.waitForSelector('.js-abuse-button button button-origin').catch(e => {
+                await page.waitForSelector('.item-params-list').catch(e => {
                     console.log(e.message);
                 });
-                let description = page.evaluate(async () => {
-                    return document.querySelector('.item-description-text').innerText;
-                });
+                let description = await page.evaluate(async (resolve) => {
+                    let descriptionCont = [];
+                    try {
+                        description = document.querySelector('.item-description-text').innerText;
+                        console.log("I've added:", description);
+                        descriptionCont.push({
+                            description,
+                        })
+                    } catch (e) {
+                        console.log(e);
+                    }
+                    return descriptionCont;
+                })
+                    .catch(e => console.log(e))
+                    .then(detPageCont => dataCardsAvito[i].detailPage = detPageCont);
+                console.log('description to add:,', description);
 
-                dataCardsAvito[i].description = description;
+
+                console.log("new description in:", i, 'ad: ', dataCardsAvito[i].description);
+                console.log("now card looks like:", dataCardsAvito[i]);
 
             }
-
 
             fs.writeFile('avitoDataCards.json', JSON.stringify(dataCardsAvito), err => {
                 if (err) {
