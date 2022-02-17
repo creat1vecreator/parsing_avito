@@ -6,11 +6,8 @@ let link = 'https://www.avito.ru/nizhniy_novgorod/kvartiry/prodam/vtorichka-ASgB
 const startScrapping = async () => {
     await puppeteer.launch({
         defaultViewport: {
-            width: 1400,
-            height: 900
-        },
-        headless: false,
-        devtools: true
+            width: 1400, height: 900
+        }, headless: false, devtools: true
     }).then(async browser => {
         let page = (await browser.pages())[0];
         await page.goto(link, {waitUntil: 'domcontentloaded'});
@@ -63,14 +60,7 @@ const startScrapping = async () => {
 
 
                     res.push({
-                        id,
-                        link,
-                        price,
-                        address,
-                        rooms,
-                        square,
-                        floorFlat,
-                        floorHouse,
+                        id, link, price, address, rooms, square, floorFlat, floorHouse,
 
 
                     });
