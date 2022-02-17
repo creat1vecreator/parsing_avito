@@ -100,9 +100,10 @@ const startScrapping = async () => {
                     } catch (e) {
                         console.log(e);
                     }
-                return descriptionCont}).catch(e => console.log(e));
+                return descriptionCont})
+                    .then(descr => dataCardsAvito[i].detailPage = descr)
+                    .catch(e => console.log(e));
                 console.log('description to add:,', description);
-                dataCardsAvito[i].detailPage = description
 
 
                 console.log("new description in:", i, 'ad: ', dataCardsAvito[i].description);
